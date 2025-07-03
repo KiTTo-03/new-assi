@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - MyTaxi</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Admin Dashboard</h1>
+      <button id="logoutBtn" class="logout-btn">Logout</button>
+    </header>
+
+    <!-- Greeting Section -->
+    <section class="welcome-section">
+      <h2 id="greeting">Administrator Panel</h2>
+    </section>
+
+    <!-- User Management -->
+    <section class="card">
+      <h3>User Management</h3>
+      <button id="loadUsersBtn" class="primary-btn">Load All Users</button>
+      
+      <div class="search-box">
+        <input type="text" id="userSearch" placeholder="Search users...">
+        <button id="searchUserBtn">Search</button>
+      </div>
+      
+      <div class="user-list">
+        <h4>User List:</h4>
+        <table id="userTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Username</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Users will be populated here -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Ride Management -->
+    <section class="card">
+      <h3>Ride Management</h3>
+      <button id="loadRidesBtn" class="primary-btn">Load All Rides</button>
+      
+      <div class="ride-list">
+        <h4>All Rides:</h4>
+        <table id="rideTable">
+          <thead>
+            <tr>
+              <th>Ride ID</th>
+              <th>Passenger</th>
+              <th>Driver</th>
+              <th>Status</th>
+              <th>Fare (RM)</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Rides will be populated here -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

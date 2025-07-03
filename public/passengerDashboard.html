@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Passenger Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Passenger Dashboard</h1>
+      <button id="logoutBtn" class="logout-btn">Logout</button>
+    </header>
+
+    <!-- Greeting Section -->
+    <section class="welcome-section">
+      <h2 id="greeting">Welcome back!</h2>
+    </section>
+
+    <!-- Request Ride Section -->
+    <section class="card">
+      <h3>Request a Ride</h3>
+      <div class="form-group">
+        <label for="pickupLocation">Pickup Location</label>
+        <input type="text" id="pickupLocation" placeholder="Enter pickup location">
+      </div>
+      <div class="form-group">
+        <label for="destination">Destination</label>
+        <input type="text" id="destination" placeholder="Enter destination">
+      </div>
+      <div class="form-group">
+        <label for="fare">Fare (RM)</label>
+        <input type="number" id="fare" placeholder="Enter fare">
+      </div>
+      <button id="requestRideBtn" class="primary-btn">Request Ride</button>
+    </section>
+
+    <!-- View Driver Section -->
+    <section class="card">
+      <h3>View Driver Information</h3>
+      <div class="form-group">
+        <label for="driverId">Driver ID</label>
+        <input type="text" id="driverId" placeholder="Enter driver ID">
+      </div>
+      <button id="viewDriverBtn" class="secondary-btn">View Driver</button>
+      <div class="driver-info">
+        <h4>Driver Details:</h4>
+        <pre id="driverInfo">No driver information loaded yet</pre>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>Accept Ride</h3>
+      <div class="form-group">
+        <label for="rideId">Ride ID</label>
+        <input type="text" id="rideId" placeholder="Enter ride ID">
+      </div>
+      <button id="acceptRideBtn" class="secondary-btn">Accept Ride</button>
+    </section>
+
+    <!-- Account Management -->
+    <section class="card danger-card">
+      <h3>Account Management</h3>
+      <button id="deleteAccountBtn" class="danger-btn">Delete My Account</button>
+      <p class="warning-text">Warning: This action cannot be undone</p>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
