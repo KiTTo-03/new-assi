@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyTaxi Platform</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>MyTaxi Platform</h1>
+        </header>
+
+        <!-- Login Form -->
+        <section id="loginSection">
+            <h2>Login</h2>
+            <input type="text" id="loginUsername" placeholder="Username">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <button id="loginButton">Login</button>
+            <p>Don't have an account? <a href="#" id="showSignupLink">Sign up</a></p>
+        </section>
+
+        <!-- Signup Form -->
+        <section id="signupSection" class="hidden">
+            <h2>Signup</h2>
+            <input type="text" id="signupUsername" placeholder="Username">
+            <input type="password" id="signupPassword" placeholder="Password">
+            <select id="signupRole">
+                <option value="driver">Driver</option>
+                <option value="passenger">Passenger</option>
+            </select>
+            <button id="signupButton">Sign Up</button>
+            <p>Already have an account? <a href="#" id="showLoginLink">Login</a></p>
+        </section>
+
+        <!-- Driver Dashboard -->
+        <section id="driverDashboard" class="dashboard hidden">
+            <h2>Driver Dashboard</h2>
+            <button id="viewPassengerBtn">View Passengers</button>
+            <button id="updateProfileBtn">Update Profile</button>
+            <button id="deleteAccountBtn">Delete Account</button>
+        </section>
+
+        <!-- Passenger Dashboard -->
+        <section id="passengerDashboard" class="dashboard hidden">
+            <h2>Passenger Dashboard</h2>
+            <button id="requestRideBtn">Request Ride</button>
+            <button id="viewDriverInfoBtn">View Driver Info</button>
+            <button id="acceptRideBtn">Accept Ride</button>
+            <button id="deletePassengerAccountBtn">Delete Account</button>
+        </section>
+
+        <!-- Admin Dashboard -->
+        <section id="adminDashboard" class="dashboard hidden">
+            <h2>Admin Dashboard</h2>
+            <button id="viewAllRidesBtn">View All Rides</button>
+            <button id="manageUserBtn">Manage Users</button>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
