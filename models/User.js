@@ -18,7 +18,11 @@ const userSchema = new mongoose.Schema({
     required: true 
   },
   profile: {
-    phone: { type: String, default: '' }
+    phone: { type: String, default: '' },
+    // ADDED DRIVER-SPECIFIC FIELDS
+    carType: { type: String, default: '' },
+    carColor: { type: String, default: '' },
+    seatsAvailable: { type: Number, default: 4 }
   },
   active: { type: Boolean, default: true },
 }, { timestamps: true });

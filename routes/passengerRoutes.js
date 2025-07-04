@@ -19,10 +19,11 @@ module.exports = function(app, authenticate) {
         return res.status(401).json({ message: 'Invalid credentials' });
       }
 
+      // FIXED: Use environment variable for JWT secret
       const token = jwt.sign({ 
         userId: user._id, 
         role: 'passenger' 
-      }, 'secretkey', { expiresIn: '1h' });
+      }, process.env.JWT_SECRET, { expiresIn: '12h' });
       
       res.json({ 
         token, 
@@ -34,18 +35,18 @@ module.exports = function(app, authenticate) {
     }
   });
 
-  // Request a ride
+  // Request a ride (without driverId)
   app.post('/passenger/requestRide', authenticate, async (req, res) => {
     try {
-      const { driverId, pickupLocation, destination, fare } = req.body;
+      const { pickupLocation, destination, fare } = req.body;
       
-      if (!driverId || !pickupLocation || !destination || !fare) {
+      if (!pickupLocation || !destination || !fare) {
         return res.status(400).json({ message: 'Missing required fields' });
       }
 
       const newRide = new Ride({
         passengerId: req.user.userId,
-        driverId,
+        driverId: null,
         pickupLocation,
         destination,
         fare,
@@ -59,25 +60,52 @@ module.exports = function(app, authenticate) {
     }
   });
 
-  // View driver info
-  app.get('/passenger/viewDriverInfo/:driverId', authenticate, async (req, res) => {
-    try {
-      const driver = await User.findById(req.params.driverId).select('-password');
-      if (!driver) {
-        return res.status(404).json({ message: 'Driver not found' });
-      }
-      res.json(driver);
-    } catch (error) {
-      res.status(500).json({ message: 'Error fetching driver info' });
+// Get active ride
+app.get('/passenger/activeRide', authenticate, async (req, res) => {
+  try {
+    const ride = await Ride.findOne({
+      passengerId: req.user.userId,
+      status: { $in: ['requested', 'driver_accepted', 'accepted', 'in_progress'] }
+    }).populate('driverId', 'username profile');
+    
+    if (!ride) {
+      return res.status(404).json({ message: 'No active ride found' });
     }
-  });
+    
+    res.json(ride);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching active ride' });
+  }
+});
 
-  // Accept a ride
-  app.put('/passenger/acceptRide/:rideId', authenticate, async (req, res) => {
+
+  // Accept driver
+  app.put('/passenger/acceptDriver/:rideId', authenticate, async (req, res) => {
     try {
       const ride = await Ride.findByIdAndUpdate(
         req.params.rideId, 
         { status: 'accepted' }, 
+        { new: true }
+      ).populate('driverId', 'username');
+      
+      if (!ride) {
+        return res.status(404).json({ message: 'Ride not found' });
+      }
+      
+      res.json(ride);
+    } catch (error) {
+      res.status(500).json({ message: 'Error accepting driver' });
+    }
+  });
+
+  // Reject driver
+  app.put('/passenger/rejectDriver/:rideId', authenticate, async (req, res) => {
+    try {
+      const ride = await Ride.findByIdAndUpdate(
+        req.params.rideId, 
+        { 
+          status: 'rejected'  // Only update status to 'rejected'
+        }, 
         { new: true }
       );
       
@@ -87,7 +115,7 @@ module.exports = function(app, authenticate) {
       
       res.json(ride);
     } catch (error) {
-      res.status(500).json({ message: 'Error accepting ride' });
+      res.status(500).json({ message: 'Error rejecting driver' });
     }
   });
 

@@ -18,17 +18,53 @@
       <h2 id="greeting">Welcome back!</h2>
     </section>
 
-    <!-- View Passengers Section -->
+<!-- Available Rides Section -->
+<section class="card">
+  <h3>Available Rides</h3>
+  <!-- Changed button ID -->
+  <button id="loadAvailableRidesBtn" class="primary-btn">Load Available Rides</button>
+  <div class="passenger-list">
+    <h4>Ride Requests:</h4>
+    <ul id="availableRidesList">
+      <li>No rides available</li>
+    </ul>
+  </div>
+</section>
+
+    <!-- Current Ride Status -->
     <section class="card">
-      <h3>Available Passengers</h3>
-      <button id="viewPassengerBtn" class="primary-btn">Load Passengers</button>
-      <div class="passenger-list">
-        <h4>Passenger List:</h4>
-        <ul id="passengerList">
-          <li>No passengers loaded yet</li>
-        </ul>
+      <h3>Current Ride Status</h3>
+      <div id="currentRideStatus">
+        <p>No active ride</p>
       </div>
+      <!-- ADDED NOTE ABOUT REJECTED RIDES -->
+      <p class="warning-text" style="margin-top: 15px; text-align: center;">
+        Rejected rides can be viewed in your Ride History
+      </p>
     </section>
+    
+        <!-- NEW: Ride History Section -->
+        <section class="card">
+          <h3>Ride History</h3>
+          <button id="loadHistoryBtn" class="primary-btn">Load History</button>
+          <div class="history-list">
+            <table id="historyTable">
+              <thead>
+                <tr>
+                  <th>Passenger</th>
+                  <th>From</th>
+                  <th>To</th>
+                  <th>Fare</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- History will be populated here -->
+              </tbody>
+            </table>
+          </div>
+        </section>
 
     <!-- Update Profile Section -->
     <section class="card">
@@ -41,6 +77,18 @@
         <label for="updatePhone">Phone Number</label>
         <input type="text" id="updatePhone" placeholder="Enter new phone number">
       </div>
+      <div class="form-group">
+        <label for="updateCarType">Car Type</label>
+        <input type="text" id="updateCarType" placeholder="e.g., Toyota Camry">
+      </div>
+      <div class="form-group">
+        <label for="updateCarColor">Car Color</label>
+        <input type="text" id="updateCarColor" placeholder="e.g., Red">
+      </div>
+      <div class="form-group">
+        <label for="updateSeats">Seats Available</label>
+        <input type="number" id="updateSeats" min="1" max="8" value="4">
+      </div>
       <button id="updateProfileBtn" class="secondary-btn">Update Profile</button>
     </section>
 
@@ -51,6 +99,7 @@
       <p class="warning-text">Warning: This action cannot be undone</p>
     </section>
   </div>
+
 
   <script src="script.js"></script>
 </body>

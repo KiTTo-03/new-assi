@@ -28,10 +28,26 @@
       
       <div class="form-group">
         <label for="signupRole">Account Type</label>
-        <select id="signupRole">
+        <select id="signupRole" onchange="toggleDriverFields()">
           <option value="driver">Driver</option>
           <option value="passenger">Passenger</option>
         </select>
+      </div>
+      
+      <!-- ADDED DRIVER-SPECIFIC FIELDS -->
+      <div id="driverFields" style="display: none;">
+        <div class="form-group">
+          <label for="carType">Car Type</label>
+          <input type="text" id="carType" placeholder="e.g., Toyota Camry">
+        </div>
+        <div class="form-group">
+          <label for="carColor">Car Color</label>
+          <input type="text" id="carColor" placeholder="e.g., Red">
+        </div>
+        <div class="form-group">
+          <label for="seatsAvailable">Seats Available</label>
+          <input type="number" id="seatsAvailable" min="1" max="8" value="4">
+        </div>
       </div>
       
       <button id="signupButton" class="primary-btn">Sign Up</button>
@@ -42,6 +58,15 @@
     </section>
   </div>
 
+  <script>
+    function toggleDriverFields() {
+      const role = document.getElementById('signupRole').value;
+      const driverFields = document.getElementById('driverFields');
+      driverFields.style.display = role === 'driver' ? 'block' : 'none';
+    }
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', toggleDriverFields);
+  </script>
   <script src="script.js"></script>
 </body>
 </html>

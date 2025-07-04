@@ -36,27 +36,17 @@
       <button id="requestRideBtn" class="primary-btn">Request Ride</button>
     </section>
 
-    <!-- View Driver Section -->
-    <section class="card">
-      <h3>View Driver Information</h3>
-      <div class="form-group">
-        <label for="driverId">Driver ID</label>
-        <input type="text" id="driverId" placeholder="Enter driver ID">
-      </div>
-      <button id="viewDriverBtn" class="secondary-btn">View Driver</button>
-      <div class="driver-info">
-        <h4>Driver Details:</h4>
-        <pre id="driverInfo">No driver information loaded yet</pre>
-      </div>
-    </section>
 
+
+    <!-- Ride Status Section -->
     <section class="card">
-      <h3>Accept Ride</h3>
-      <div class="form-group">
-        <label for="rideId">Ride ID</label>
-        <input type="text" id="rideId" placeholder="Enter ride ID">
+      <h3>Ride Status</h3>
+      <div id="rideStatus">
+        <p>No active ride</p>
       </div>
-      <button id="acceptRideBtn" class="secondary-btn">Accept Ride</button>
+      <button id="newRequestBtn" class="primary-btn" style="display: none; margin-top: 10px;">
+        Create New Ride Request
+      </button>
     </section>
 
     <!-- Account Management -->

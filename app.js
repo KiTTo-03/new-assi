@@ -7,6 +7,8 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const app = express();
 const port = 3000;
+const User = require('./models/User'); // Add this at the top
+const Ride = require('./models/Ride'); // Add this at the top
 
 // Middleware
 app.use(bodyParser.json());
@@ -23,14 +25,15 @@ if (!uri) {
 mongoose.connect(uri)
   .then(() => {
     console.log('Connected to MongoDB Atlas!');
-    const User = require('./models/User');
-    const Ride = require('./models/Ride');
-    createAdminAccount(User);
+    // Remove these lines from here:
+    // const User = require('./models/User');
+    // const Ride = require('./models/Ride');
+    createAdminAccount();
   })
   .catch(err => console.error('MongoDB connection error:', err));
 
-// Function to create admin account
-async function createAdminAccount(User) {
+// Change createAdminAccount function to not accept parameters
+async function createAdminAccount() {
   try {
     const adminExists = await User.findOne({ username: 'admin', role: 'admin' });
     if (!adminExists) {
@@ -49,35 +52,30 @@ async function createAdminAccount(User) {
   }
 }
 
-// Authentication middleware
+// Unified authentication middleware
 function authenticate(req, res, next) {
   const token = req.headers['authorization']?.split(' ')[1];
   if (!token) return res.status(403).json({ message: 'Access denied. No token provided.' });
 
   try {
     const verified = jwt.verify(token, process.env.JWT_SECRET);
+    const path = req.path;
+
+    // Role-based access control
+    if (path.startsWith('/driver') && verified.role !== 'driver') {
+      return res.status(403).json({ message: 'Driver access required' });
+    }
+    if (path.startsWith('/passenger') && verified.role !== 'passenger') {
+      return res.status(403).json({ message: 'Passenger access required' });
+    }
+    if (path.startsWith('/admin') && verified.role !== 'admin') {
+      return res.status(403).json({ message: 'Admin access required' });
+    }
+
     req.user = verified;
     next();
   } catch (err) {
     console.error('Token verification error:', err);
-    res.status(400).json({ message: 'Invalid token' });
-  }
-}
-
-// Admin authentication middleware
-function authenticateAdmin(req, res, next) {
-  const token = req.headers['authorization']?.split(' ')[1];
-  if (!token) return res.status(403).json({ message: 'Access denied. No token provided.' });
-
-  try {
-    const verified = jwt.verify(token, process.env.JWT_SECRET);
-    if (verified.role !== 'admin') {
-      return res.status(403).json({ message: 'Admin access required' });
-    }
-    req.user = verified;
-    next();
-  } catch (err) {
-    console.error('Admin token error:', err);
     res.status(400).json({ message: 'Invalid token' });
   }
 }
@@ -115,7 +113,7 @@ app.get('/adminDashboard.html', (req, res) => {
 
 // User signup endpoint
 app.post('/signup', async (req, res) => {
-  const { username, password, role } = req.body;
+  const { username, password, role, profile } = req.body; // Added profile
 
   if (!username || !password || !role) {
     return res.status(400).json({ message: 'Missing required fields' });
@@ -133,7 +131,15 @@ app.post('/signup', async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, password: hashedPassword, role });
+    
+    // Create new user with profile data
+    const newUser = new User({
+      username, 
+      password: hashedPassword, 
+      role,
+      profile: profile || {}  // Handle profile data
+    });
+    
     await newUser.save();
     
     res.status(201).json({ 
@@ -155,7 +161,6 @@ app.post('/login', async (req, res) => {
   }
 
   try {
-    const User = mongoose.model('User');
     const user = await User.findOne({ username, role });
     if (!user || !user.active) {
       return res.status(401).json({ message: 'Invalid credentials' });
@@ -166,10 +171,11 @@ app.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
+    // FIXED: Use environment variable for JWT secret
     const token = jwt.sign({ 
       userId: user._id, 
       role: user.role 
-    }, 'secretkey', { expiresIn: '1h' });
+    }, process.env.JWT_SECRET, { expiresIn: '12h' });
     
     res.json({ 
       token, 
@@ -186,10 +192,8 @@ app.post('/login', async (req, res) => {
 // Admin login endpoint
 app.post('/admin/login', async (req, res) => {
   const { username, password } = req.body;
-  console.log(`Admin login attempt: ${username}`);
   
   if (!username || !password) {
-    console.log('Missing credentials');
     return res.status(400).json({ message: 'Missing credentials' });
   }
 
@@ -198,23 +202,19 @@ app.post('/admin/login', async (req, res) => {
     const user = await User.findOne({ username, role: 'admin' });
     
     if (!user) {
-      console.log('Admin user not found');
       return res.status(401).json({ message: 'Invalid admin credentials' });
     }
 
-    console.log(`Admin found: ${user.username}, active: ${user.active}`);
-    
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log(`Password match: ${isMatch}`);
-    
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid admin credentials' });
     }
 
+    // FIXED: Use environment variable for JWT secret
     const token = jwt.sign({ 
       userId: user._id, 
       role: 'admin' 
-    }, 'secretkey', { expiresIn: '1h' });
+    }, process.env.JWT_SECRET, { expiresIn: '12h' });
     
     res.json({ 
       token, 
@@ -231,7 +231,7 @@ app.post('/admin/login', async (req, res) => {
 // Load route files
 require('./routes/driverRoutes')(app, authenticate);
 require('./routes/passengerRoutes')(app, authenticate);
-require('./routes/adminRoutes')(app, authenticateAdmin);
+require('./routes/adminRoutes')(app, authenticate);
 
 // Start server
 app.listen(port, () => {

@@ -4,7 +4,12 @@ const rideSchema = new mongoose.Schema({
   driverId: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'User',
-    required: true
+    validate: {
+      validator: function(v) {
+        return !this.passengerId.equals(v); // Prevent driver = passenger
+      },
+      message: 'Driver cannot be the same as passenger'
+    }
   },
   passengerId: { 
     type: mongoose.Schema.Types.ObjectId, 
@@ -26,7 +31,7 @@ const rideSchema = new mongoose.Schema({
   },
   status: { 
     type: String, 
-    enum: ['requested', 'accepted', 'completed'],
+    enum: ['requested', 'driver_accepted', 'accepted', 'rejected', 'completed', 'cancelled'],
     default: 'requested' 
   }
 }, { timestamps: true });
